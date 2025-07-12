@@ -1,5 +1,7 @@
 package com.books.LiterAlura.principal;
 
+import com.books.LiterAlura.service.GutendexBookApiService;
+
 import java.util.Scanner;
 
 public class Principal {
@@ -13,7 +15,7 @@ public class Principal {
                 """;
         int option = -1;
 
-        while(option != -1){
+        while(option != 0){
             System.out.println(menu);
             option = Integer.parseInt(reader.nextLine());
 
@@ -28,5 +30,14 @@ public class Principal {
     }
 
     private void bookSelection() {
+        getBookData();
+    }
+
+    private String getBookData(){
+        System.out.println("Enter a book: ");
+        String name = reader.nextLine();
+        String json = GutendexBookApiService.getData(BASE_URL+name);
+        System.out.println(json);
+        return "";
     }
 }
