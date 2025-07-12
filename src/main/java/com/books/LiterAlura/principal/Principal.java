@@ -1,17 +1,28 @@
 package com.books.LiterAlura.principal;
 
-import com.books.LiterAlura.model.Book;
-import com.books.LiterAlura.model.BookData;
-import com.books.LiterAlura.model.BookResponse;
+import com.books.LiterAlura.model.*;
+import com.books.LiterAlura.repository.AuthorRepository;
+import com.books.LiterAlura.repository.BookRepository;
 import com.books.LiterAlura.service.Converter;
 import com.books.LiterAlura.service.GutendexBookApiService;
 
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Principal {
+
+    private BookRepository bookRepository;
+    private AuthorRepository authorRepository;
+
     private Converter cvs = new Converter();
     private Scanner reader = new Scanner(System.in);
     private final String BASE_URL = "https://gutendex.com/books/?search=";
+
+    public Principal(BookRepository bookRepository, AuthorRepository authorRepository){
+        this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
+    }
+
     public void showMenu(){
         String menu = """
                 0 - Exit
@@ -35,7 +46,13 @@ public class Principal {
     }
 
     private void bookSelection() {
-        getBookData();
+        Book book = getBookData();
+        Optional<Book> existingBook = bookRepository.findByTitleAndAuthorName(book.getTitle(), book.getAuthor().getName());
+        if(existingBook.isPresent()){
+            System.out.println("This book is already in the database.");
+        }else{
+            bookRepository.save(book);
+        }
     }
 
     private Book getBookData(){
@@ -43,7 +60,14 @@ public class Principal {
         String name = reader.nextLine();
         String json = GutendexBookApiService.getData(BASE_URL+name);
         BookResponse bookResponse = cvs.getData(json, BookResponse.class);
-        BookData book = bookResponse.books().get(0);
-        return new Book(book);
+        Book book= new Book(bookResponse.books().get(0));
+        Optional<Author> authorOptional = authorRepository.findByName(book.getAuthor().getName());
+
+        if(authorOptional.isEmpty()){
+            authorRepository.save(book.getAuthor());
+        }else{
+            book.setAuthor(authorOptional.get());
+        }
+        return book;
     }
 }

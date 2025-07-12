@@ -1,12 +1,21 @@
 package com.books.LiterAlura.model;
 
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "author")
 public class Author {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private Integer birthYear;
     private Integer deathYear;
-    private List<Book> books;
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL)
+    private List<Book> books = new ArrayList<>();
 
     public Author(){}
 
