@@ -38,11 +38,10 @@ The goal is not only to manage data, but also to **practice backend development 
 
 To get this project running locally, follow the steps below:
 
-
+```bash
 # 1. Clone the repository
-    ```bash
-    git clone https://github.com/your-username/literalura.git
-    cd literalura
+git clone https://github.com/your-username/literalura.git
+cd literalura
 
 # 2. Create a PostgreSQL database
 # (Access your PostgreSQL CLI or a client like pgAdmin and run:)
