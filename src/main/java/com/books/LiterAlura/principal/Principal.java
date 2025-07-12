@@ -60,14 +60,21 @@ public class Principal {
         String name = reader.nextLine();
         String json = GutendexBookApiService.getData(BASE_URL+name);
         BookResponse bookResponse = cvs.getData(json, BookResponse.class);
-        Book book= new Book(bookResponse.books().get(0));
+        if (bookResponse.books().isEmpty()) {
+            System.out.println("No books found for this search.");
+            return null; // ou lançar exceção, ou repetir input
+        }
+
+        Book book = new Book(bookResponse.books().get(0));
         Optional<Author> authorOptional = authorRepository.findByName(book.getAuthor().getName());
 
-        if(authorOptional.isEmpty()){
-            authorRepository.save(book.getAuthor());
-        }else{
+        if (authorOptional.isPresent()) {
             book.setAuthor(authorOptional.get());
+        } else {
+            Author savedAuthor = authorRepository.save(book.getAuthor());
+            book.setAuthor(savedAuthor);
         }
+
         return book;
     }
 }
