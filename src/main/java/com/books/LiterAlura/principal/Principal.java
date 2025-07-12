@@ -33,6 +33,9 @@ public class Principal {
                 3 - Find all books by given author
                 4 - Most downloaded book
                 5 - Show books by language
+                6 - List authors alive during a given period
+                7 - List all authors
+                8 - Author with most published works
                 >
                 """;
         int option = -1;
@@ -61,10 +64,38 @@ public class Principal {
                 case 5:
                     showBooksByLanguage();
                 break;
+                case 6:
+                    listAuthorAlive();
+                break;
+                case 7:
+                    listAllAuthors();
+                break;
+                case 8:
+                    getAuthorWithMostPublishedWorks();
+                break;
                 default:
                     System.out.println("Invalid option");
             }
         }
+    }
+
+    private void getAuthorWithMostPublishedWorks() {
+        System.out.println("AUTHOR WITH MOST PUBLISHED BOOKS:");
+        Author author = authorRepository.findAuthorMostPublishedBooks();
+        System.out.println(author);
+    }
+
+    private void listAllAuthors() {
+        List<Author> authors = authorRepository.findAll();
+        System.out.println("AUTHORS: ");
+        authors.forEach(a -> System.out.println(a.getName()));
+    }
+
+    private void listAuthorAlive() {
+        System.out.println("Enter a year: ");
+        int year = Integer.parseInt(reader.nextLine());
+        List<Author> authors = authorRepository.findAuthorAliveByGiverYear(year);
+        authors.forEach(System.out::println);
     }
 
     private void showBooksByLanguage() {

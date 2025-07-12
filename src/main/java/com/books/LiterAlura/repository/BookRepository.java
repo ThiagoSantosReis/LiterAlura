@@ -1,5 +1,6 @@
 package com.books.LiterAlura.repository;
 
+import com.books.LiterAlura.model.Author;
 import com.books.LiterAlura.model.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query("SELECT b FROM Book b WHERE b.language = :language")
     List<Book> findByGivenLanguage(String language);
+
 }
